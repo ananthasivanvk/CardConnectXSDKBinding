@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POCCardConnect", "POCCardConnect\POCCardConnect.csproj", "{AE17CAA1-E826-42F7-AEDC-9851B996F908}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE17CAA1-E826-42F7-AEDC-9851B996F908}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{AE17CAA1-E826-42F7-AEDC-9851B996F908}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{AE17CAA1-E826-42F7-AEDC-9851B996F908}.Release|iPhone.ActiveCfg = Release|iPhone
+		{AE17CAA1-E826-42F7-AEDC-9851B996F908}.Release|iPhone.Build.0 = Release|iPhone
+		{AE17CAA1-E826-42F7-AEDC-9851B996F908}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{AE17CAA1-E826-42F7-AEDC-9851B996F908}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{AE17CAA1-E826-42F7-AEDC-9851B996F908}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{AE17CAA1-E826-42F7-AEDC-9851B996F908}.Debug|iPhone.Build.0 = Debug|iPhone
+	EndGlobalSection
+EndGlobal

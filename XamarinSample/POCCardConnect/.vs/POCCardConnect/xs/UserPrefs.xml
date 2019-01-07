@@ -1,0 +1,28 @@
+﻿<Properties StartupConfiguration="{AE17CAA1-E826-42F7-AEDC-9851B996F908}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="POCCardConnect/ViewController.cs">
+    <Files>
+      <File FileName="POCCardConnect/ViewController.cs" Line="63" Column="38" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="CardConnect" expanded="True" />
+          <Node name="POCCardConnect" expanded="True">
+            <Node name="POCCardConnect" expanded="True">
+              <Node name="ViewController.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
+  <MonoDevelop.Ide.ItemProperties.POCCardConnect PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.D405DFBD-B3B1-4C33-B375-66B6B2C3F4C0">
+    <MonoDevelop.MacDev.AppleDevelopmentTeam />
+  </MonoDevelop.Ide.ItemProperties.POCCardConnect>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
