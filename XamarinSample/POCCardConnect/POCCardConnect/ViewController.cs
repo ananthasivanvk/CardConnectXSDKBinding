@@ -40,7 +40,7 @@ namespace POCCardConnect
             //PresentViewController(okAlertController, true, null);
 
 
-           
+            ObjCRuntime.Class.ThrowOnInitFailure = false;
 
             CCCAPIBridgeProtocol aPIBridge = new APIBridge();
 

@@ -25,7 +25,7 @@ using UIKit;
 namespace CardConnect
 {
 
-
+    /*
     // @protocol PKPaymentAuthorizationViewControllerDelegate <NSObject>
     [Protocol, Model]
     [BaseType(typeof(NSObject))]
@@ -236,7 +236,7 @@ namespace CardConnect
         [Export("dismissWithCompletion:")]
         void DismissWithCompletion([NullAllowed] Action completion);
     }
-
+    */
 
     // @interface CCCCardInfo : NSObject <NSCopying>
     [Protocol]

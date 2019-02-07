@@ -5,3 +5,6 @@
 /Users/Ananthasivanvk/Documents/Projects/ccsdk/CardConnect/CardConnectBindingLibrary/CardConnect/bin/Release/CardConnect.dll
 /Users/Ananthasivanvk/Documents/Projects/ccsdk/CardConnect/CardConnectBindingLibrary/CardConnect/obj/Release/CardConnect.csproj.CoreCompileInputs.cache
 /Users/Ananthasivanvk/Documents/Projects/ccsdk/CardConnect/CardConnectBindingLibrary/CardConnect/obj/Release/CardConnect.dll
+/Users/Ananthasivanvk/Documents/GitHub/CardConnectXSDKBinding/CardConnectBindingLibrary/CardConnect/bin/Release/CardConnect.dll
+/Users/Ananthasivanvk/Documents/GitHub/CardConnectXSDKBinding/CardConnectBindingLibrary/CardConnect/obj/Release/CardConnect.csproj.CoreCompileInputs.cache
+/Users/Ananthasivanvk/Documents/GitHub/CardConnectXSDKBinding/CardConnectBindingLibrary/CardConnect/obj/Release/CardConnect.dll

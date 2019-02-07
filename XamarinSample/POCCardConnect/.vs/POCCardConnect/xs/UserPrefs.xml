@@ -1,15 +1,16 @@
 ﻿<Properties StartupConfiguration="{AE17CAA1-E826-42F7-AEDC-9851B996F908}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="POCCardConnect/ViewController.cs">
     <Files>
-      <File FileName="POCCardConnect/ViewController.cs" Line="63" Column="38" />
+      <File FileName="POCCardConnect/ViewController.cs" Line="61" Column="16" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="CardConnect" expanded="True" />
           <Node name="POCCardConnect" expanded="True">
             <Node name="POCCardConnect" expanded="True">
-              <Node name="ViewController.cs" selected="True" />
+              <Node name="References" expanded="True">
+                <Node name="CardConnect" selected="True" />
+              </Node>
             </Node>
           </Node>
         </State>
