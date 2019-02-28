@@ -1,0 +1,4 @@
+# Version: 12.2.1.15 (d15-9: d60abd198)
+# [first argument, ignore] # @/Users/Ananthasivanvk/Documents/GitHub/CardConnectXSDKBinding/XamarinSample/POCCardConnect/POCCardConnect/obj/iPhoneSimulator/Release/response-file.rsp
+/Library/Frameworks/Xamarin.iOS.framework/Versions/12.2.1.15/lib/mtouch/mtouch.exe \
+	--optimize=-remove-dynamic-registrar \

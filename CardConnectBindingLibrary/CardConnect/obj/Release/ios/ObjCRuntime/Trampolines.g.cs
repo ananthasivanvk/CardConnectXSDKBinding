@@ -51,7 +51,67 @@ namespace ObjCRuntime {
 		static extern IntPtr _Block_copy (IntPtr ptr);
 		
 		[UnmanagedFunctionPointerAttribute (CallingConvention.Cdecl)]
-		[UserDelegateType (typeof (global::System.Action<global::CardConnect.CCCAccount, NSError>))]
+		[UserDelegateType (typeof (global::System.Action))]
+		internal delegate void DAction (IntPtr block);
+		
+		//
+		// This class bridges native block invocations that call into C#
+		//
+		static internal class SDAction {
+			static internal readonly DAction Handler = Invoke;
+			
+			[MonoPInvokeCallback (typeof (DAction))]
+			static unsafe void Invoke (IntPtr block) {
+				var descriptor = (BlockLiteral *) block;
+				var del = (global::System.Action) (descriptor->Target);
+				if (del != null)
+					del ();
+			}
+		} /* class SDAction */
+		
+		internal class NIDAction {
+			IntPtr blockPtr;
+			DAction invoker;
+			
+			[Preserve (Conditional=true)]
+			[BindingImpl (BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+			public unsafe NIDAction (BlockLiteral *block)
+			{
+				blockPtr = _Block_copy ((IntPtr) block);
+				invoker = block->GetDelegateForBlock<DAction> ();
+			}
+			
+			[Preserve (Conditional=true)]
+			[BindingImpl (BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+			~NIDAction ()
+			{
+				Runtime.ReleaseBlockOnMainThread (blockPtr);
+			}
+			
+			[Preserve (Conditional=true)]
+			[BindingImpl (BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+			public unsafe static global::System.Action Create (IntPtr block)
+			{
+				if (block == IntPtr.Zero)
+					return null;
+				if (BlockLiteral.IsManagedBlock (block)) {
+					var existing_delegate = ((BlockLiteral *) block)->Target as global::System.Action;
+					if (existing_delegate != null)
+						return existing_delegate;
+				}
+				return new NIDAction ((BlockLiteral *) block).Invoke;
+			}
+			
+			[Preserve (Conditional=true)]
+			[BindingImpl (BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
+			unsafe void Invoke ()
+			{
+				invoker (blockPtr);
+			}
+		} /* class NIDAction */
+		
+		[UnmanagedFunctionPointerAttribute (CallingConvention.Cdecl)]
+		[UserDelegateType (typeof (global::System.Action<global::CardConnectBinding.CCCAccount, NSError>))]
 		internal delegate void DActionArity2V0 (IntPtr block, IntPtr arg1, IntPtr arg2);
 		
 		//
@@ -63,9 +123,9 @@ namespace ObjCRuntime {
 			[MonoPInvokeCallback (typeof (DActionArity2V0))]
 			static unsafe void Invoke (IntPtr block, IntPtr arg1, IntPtr arg2) {
 				var descriptor = (BlockLiteral *) block;
-				var del = (global::System.Action<global::CardConnect.CCCAccount, NSError>) (descriptor->Target);
+				var del = (global::System.Action<global::CardConnectBinding.CCCAccount, NSError>) (descriptor->Target);
 				if (del != null)
-					del ( Runtime.GetNSObject<CardConnect.CCCAccount> (arg1),  Runtime.GetNSObject<NSError> (arg2));
+					del ( Runtime.GetNSObject<CardConnectBinding.CCCAccount> (arg1),  Runtime.GetNSObject<NSError> (arg2));
 			}
 		} /* class SDActionArity2V0 */
 		
@@ -90,12 +150,12 @@ namespace ObjCRuntime {
 			
 			[Preserve (Conditional=true)]
 			[BindingImpl (BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
-			public unsafe static global::System.Action<global::CardConnect.CCCAccount, NSError> Create (IntPtr block)
+			public unsafe static global::System.Action<global::CardConnectBinding.CCCAccount, NSError> Create (IntPtr block)
 			{
 				if (block == IntPtr.Zero)
 					return null;
 				if (BlockLiteral.IsManagedBlock (block)) {
-					var existing_delegate = ((BlockLiteral *) block)->Target as global::System.Action<global::CardConnect.CCCAccount, NSError>;
+					var existing_delegate = ((BlockLiteral *) block)->Target as global::System.Action<global::CardConnectBinding.CCCAccount, NSError>;
 					if (existing_delegate != null)
 						return existing_delegate;
 				}
@@ -104,14 +164,14 @@ namespace ObjCRuntime {
 			
 			[Preserve (Conditional=true)]
 			[BindingImpl (BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
-			unsafe void Invoke (global::CardConnect.CCCAccount arg1, NSError arg2)
+			unsafe void Invoke (global::CardConnectBinding.CCCAccount arg1, NSError arg2)
 			{
 				invoker (blockPtr, arg1 == null ? IntPtr.Zero : arg1.Handle, arg2 == null ? IntPtr.Zero : arg2.Handle);
 			}
 		} /* class NIDActionArity2V0 */
 		
 		[UnmanagedFunctionPointerAttribute (CallingConvention.Cdecl)]
-		[UserDelegateType (typeof (global::System.Action<NSArray<global::CardConnect.CCCAccount>, NSError>))]
+		[UserDelegateType (typeof (global::System.Action<NSArray<global::CardConnectBinding.CCCAccount>, NSError>))]
 		internal delegate void DActionArity2V2 (IntPtr block, IntPtr arg1, IntPtr arg2);
 		
 		//
@@ -123,9 +183,9 @@ namespace ObjCRuntime {
 			[MonoPInvokeCallback (typeof (DActionArity2V2))]
 			static unsafe void Invoke (IntPtr block, IntPtr arg1, IntPtr arg2) {
 				var descriptor = (BlockLiteral *) block;
-				var del = (global::System.Action<NSArray<global::CardConnect.CCCAccount>, NSError>) (descriptor->Target);
+				var del = (global::System.Action<NSArray<global::CardConnectBinding.CCCAccount>, NSError>) (descriptor->Target);
 				if (del != null)
-					del ( Runtime.GetNSObject<global::Foundation.NSArray<global::CardConnect.CCCAccount>> (arg1),  Runtime.GetNSObject<NSError> (arg2));
+					del ( Runtime.GetNSObject<global::Foundation.NSArray<global::CardConnectBinding.CCCAccount>> (arg1),  Runtime.GetNSObject<NSError> (arg2));
 			}
 		} /* class SDActionArity2V2 */
 		
@@ -150,12 +210,12 @@ namespace ObjCRuntime {
 			
 			[Preserve (Conditional=true)]
 			[BindingImpl (BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
-			public unsafe static global::System.Action<NSArray<global::CardConnect.CCCAccount>, NSError> Create (IntPtr block)
+			public unsafe static global::System.Action<NSArray<global::CardConnectBinding.CCCAccount>, NSError> Create (IntPtr block)
 			{
 				if (block == IntPtr.Zero)
 					return null;
 				if (BlockLiteral.IsManagedBlock (block)) {
-					var existing_delegate = ((BlockLiteral *) block)->Target as global::System.Action<NSArray<global::CardConnect.CCCAccount>, NSError>;
+					var existing_delegate = ((BlockLiteral *) block)->Target as global::System.Action<NSArray<global::CardConnectBinding.CCCAccount>, NSError>;
 					if (existing_delegate != null)
 						return existing_delegate;
 				}
@@ -164,7 +224,7 @@ namespace ObjCRuntime {
 			
 			[Preserve (Conditional=true)]
 			[BindingImpl (BindingImplOptions.GeneratedCode | BindingImplOptions.Optimizable)]
-			unsafe void Invoke (NSArray<global::CardConnect.CCCAccount> arg1, NSError arg2)
+			unsafe void Invoke (NSArray<global::CardConnectBinding.CCCAccount> arg1, NSError arg2)
 			{
 				invoker (blockPtr, arg1 == null ? IntPtr.Zero : arg1.Handle, arg2 == null ? IntPtr.Zero : arg2.Handle);
 			}

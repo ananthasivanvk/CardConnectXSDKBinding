@@ -44,7 +44,7 @@
     <NativeReference Include="..\CardConnectConsumerSDK.framework">
       <Kind>Framework</Kind>
       <ForceLoad>True</ForceLoad>
-      <LinkerFlags>-lxml2 -ObjC</LinkerFlags>
+      <LinkerFlags>-lxml2</LinkerFlags>
     </NativeReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.ObjCBinding.CSharp.targets" />

@@ -1,6 +1,5 @@
 ﻿using System;
-using CardConnect;
-//using CardConnect;
+using CardConnectBinding;
 using Foundation;
 using ObjCRuntime;
 using PassKit;
@@ -29,18 +28,7 @@ namespace POCCardConnect
 
         partial void applePayPressed(UIButton sender)
         {
-            //var okAlertController = UIAlertController.Create("Title", "Message", UIAlertControllerStyle.Alert);
-
-            //okAlertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (obj) =>
-            //{
-
-            //    Console.WriteLine("OK Pressed");
-            //}));
-
-            //PresentViewController(okAlertController, true, null);
-
-
-            ObjCRuntime.Class.ThrowOnInitFailure = false;
+            ObjCRuntime.Class.ThrowOnInitFailure = true;
 
             CCCAPIBridgeProtocol aPIBridge = new APIBridge();
 
@@ -55,30 +43,6 @@ namespace POCCardConnect
             cCCPaymentController.PaymentRequest = cCCPayment;
 
             cCCPaymentController.PresentPaymentView();
-
-
-            //PKPaymentRequest pKPaymentRequest = new PKPaymentRequest
-            //{
-            //    CurrencyCode = "USD",
-            //    CountryCode = "US",
-            //    MerchantIdentifier = "merchant.test.id",
-            //    PaymentSummaryItems = new PKPaymentSummaryItem[]
-            //        {
-            //                new PKPaymentSummaryItem{ Label = "Total", Amount = new Foundation.NSDecimalNumber("1.00") }
-            //        },
-            //    MerchantCapabilities = PKMerchantCapability.ThreeDS,
-            //    SupportedNetworks = new Foundation.NSString[]
-            //        {
-            //                PKPaymentNetwork.Amex,
-            //                PKPaymentNetwork.Visa,
-            //                PKPaymentNetwork.MasterCard
-            //        }
-            //};
-
-            //PKPaymentAuthorizationViewController pauthCtrl = new PKPaymentAuthorizationViewController(pKPaymentRequest);
-            //pauthCtrl.PaymentAuthorizationViewControllerDidFinish += (senderObj, e) => { pauthCtrl.DismissViewController(true, null); };
-
-            //PresentViewController(pauthCtrl, true, () => { });
         }
     }
 

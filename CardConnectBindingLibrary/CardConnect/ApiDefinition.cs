@@ -1,242 +1,69 @@
 ﻿using System;
-using AVFoundation;
-//using CardConnectConsumerSDK;
-using CloudKit;
-using Contacts;
-using CoreAnimation;
-using CoreData;
-using CoreFoundation;
-using CoreGraphics;
-using CoreImage;
-using CoreLocation;
-using CoreVideo;
-using FileProvider;
-using Foundation;
-using IOSurface;
-using ImageIO;
-using Intents;
-using Metal;
-using ObjCRuntime;
-using OpenGLES;
-using PassKit;
-using Security;
+
 using UIKit;
+using Foundation;
+using ObjCRuntime;
+using CoreGraphics;
+using PassKit;
 
-namespace CardConnect
+namespace CardConnectBinding
 {
-
-    /*
-    // @protocol PKPaymentAuthorizationViewControllerDelegate <NSObject>
-    [Protocol, Model]
-    [BaseType(typeof(NSObject))]
-    interface PKPaymentAuthorizationViewControllerDelegate
-    {
-        // @required -(void)paymentAuthorizationViewControllerDidFinish:(PKPaymentAuthorizationViewController * _Nonnull)controller;
-        [Abstract]
-        [Export("paymentAuthorizationViewControllerDidFinish:")]
-        void PaymentAuthorizationViewControllerDidFinish(PKPaymentAuthorizationViewController controller);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didAuthorizePayment:(PKPayment * _Nonnull)payment handler:(void (^ _Nonnull)(PKPaymentAuthorizationResult * _Nonnull))completion __attribute__((availability(watchos, introduced=4.0))) __attribute__((availability(ios, introduced=11.0)));
-        [Watch(4, 0), iOS(11, 0)]
-        [Export("paymentAuthorizationViewController:didAuthorizePayment:handler:")]
-        void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, PKPayment payment, Action<PKPaymentAuthorizationResult> completion);
-
-        // @optional -(void)paymentAuthorizationViewControllerWillAuthorizePayment:(PKPaymentAuthorizationViewController * _Nonnull)controller __attribute__((availability(watchos, introduced=3.0))) __attribute__((availability(ios, introduced=8.3)));
-        [Watch(3, 0), iOS(8, 3)]
-        [Export("paymentAuthorizationViewControllerWillAuthorizePayment:")]
-        void PaymentAuthorizationViewControllerWillAuthorizePayment(PKPaymentAuthorizationViewController controller);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didSelectShippingMethod:(PKShippingMethod * _Nonnull)shippingMethod handler:(void (^ _Nonnull)(PKPaymentRequestShippingMethodUpdate * _Nonnull))completion __attribute__((availability(watchos, introduced=4.0))) __attribute__((availability(ios, introduced=11.0)));
-        [Watch(4, 0), iOS(11, 0)]
-        [Export("paymentAuthorizationViewController:didSelectShippingMethod:handler:")]
-        void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, PKShippingMethod shippingMethod, Action<PKPaymentRequestShippingMethodUpdate> completion);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didSelectShippingContact:(PKContact * _Nonnull)contact handler:(void (^ _Nonnull)(PKPaymentRequestShippingContactUpdate * _Nonnull))completion __attribute__((availability(watchos, introduced=4.0))) __attribute__((availability(ios, introduced=11.0)));
-        [Watch(4, 0), iOS(11, 0)]
-        [Export("paymentAuthorizationViewController:didSelectShippingContact:handler:")]
-        void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, PKContact contact, Action<PKPaymentRequestShippingContactUpdate> completion);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didSelectPaymentMethod:(PKPaymentMethod * _Nonnull)paymentMethod handler:(void (^ _Nonnull)(PKPaymentRequestPaymentMethodUpdate * _Nonnull))completion __attribute__((availability(watchos, introduced=4.0))) __attribute__((availability(ios, introduced=11.0)));
-        [Watch(4, 0), iOS(11, 0)]
-        [Export("paymentAuthorizationViewController:didSelectPaymentMethod:handler:")]
-        void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, PKPaymentMethod paymentMethod, Action<PKPaymentRequestPaymentMethodUpdate> completion);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didAuthorizePayment:(PKPayment * _Nonnull)payment completion:(void (^ _Nonnull)(PKPaymentAuthorizationStatus))completion __attribute__((availability(ios, introduced=8.0, deprecated=11.0)));
-        [Introduced(PlatformName.iOS, 8, 0, message: "Use paymentAuthorizationViewController:didAuthorizePayment:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.iOS, 11, 0, message: "Use paymentAuthorizationViewController:didAuthorizePayment:handler: instead to provide more granular errors")]
-        [Export("paymentAuthorizationViewController:didAuthorizePayment:completion:")]
-        void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, PKPayment payment, Action<PKPaymentAuthorizationStatus> completion);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didSelectShippingMethod:(PKShippingMethod * _Nonnull)shippingMethod completion:(void (^ _Nonnull)(PKPaymentAuthorizationStatus, NSArray<PKPaymentSummaryItem *> * _Nonnull))completion __attribute__((availability(ios, introduced=8.0, deprecated=11.0)));
-        [Introduced(PlatformName.iOS, 8, 0, message: "Use paymentAuthorizationViewController:didSelectShippingMethod:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.iOS, 11, 0, message: "Use paymentAuthorizationViewController:didSelectShippingMethod:handler: instead to provide more granular errors")]
-        [Export("paymentAuthorizationViewController:didSelectShippingMethod:completion:")]
-        void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, PKShippingMethod shippingMethod, Action<PKPaymentAuthorizationStatus, NSArray<PKPaymentSummaryItem>> completion);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didSelectShippingAddress:(ABRecordRef _Nonnull)address completion:(void (^ _Nonnull)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull, NSArray<PKPaymentSummaryItem *> * _Nonnull))completion __attribute__((availability(ios, introduced=8.0, deprecated=9.0)));
-        //[Introduced(PlatformName.iOS, 8, 0, message: "ABRecordRef has been deprecated. Please migrate away from this delegate callback as soon as possible.")]
-        //[Deprecated(PlatformName.iOS, 9, 0, message: "ABRecordRef has been deprecated. Please migrate away from this delegate callback as soon as possible.")]
-        //[Export("paymentAuthorizationViewController:didSelectShippingAddress:completion:")]
-        //unsafe void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, void* address, Action<PKPaymentAuthorizationStatus, NSArray<PKShippingMethod>, NSArray<PKPaymentSummaryItem>> completion);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didSelectShippingContact:(PKContact * _Nonnull)contact completion:(void (^ _Nonnull)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull, NSArray<PKPaymentSummaryItem *> * _Nonnull))completion __attribute__((availability(ios, introduced=8.0, deprecated=11.0)));
-        [Introduced(PlatformName.iOS, 8, 0, message: "Use paymentAuthorizationViewController:didSelectShippingContact:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.iOS, 11, 0, message: "Use paymentAuthorizationViewController:didSelectShippingContact:handler: instead to provide more granular errors")]
-        [Export("paymentAuthorizationViewController:didSelectShippingContact:completion:")]
-        void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, PKContact contact, Action<PKPaymentAuthorizationStatus, NSArray<PKShippingMethod>, NSArray<PKPaymentSummaryItem>> completion);
-
-        // @optional -(void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController * _Nonnull)controller didSelectPaymentMethod:(PKPaymentMethod * _Nonnull)paymentMethod completion:(void (^ _Nonnull)(NSArray<PKPaymentSummaryItem *> * _Nonnull))completion __attribute__((availability(ios, introduced=8.0, deprecated=11.0)));
-        [Introduced(PlatformName.iOS, 8, 0, message: "Use paymentAuthorizationViewController:didSelectPaymentMethod:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.iOS, 11, 0, message: "Use paymentAuthorizationViewController:didSelectPaymentMethod:handler: instead to provide more granular errors")]
-        [Export("paymentAuthorizationViewController:didSelectPaymentMethod:completion:")]
-        void PaymentAuthorizationViewController(PKPaymentAuthorizationViewController controller, PKPaymentMethod paymentMethod, Action<NSArray<PKPaymentSummaryItem>> completion);
-    }
-
-    // @interface PKPaymentAuthorizationViewController : UIViewController
-    [iOS(8, 0)]
-    [BaseType(typeof(UIViewController))]
-    interface PKPaymentAuthorizationViewController
-    {
-        // +(BOOL)canMakePayments;
-        [Static]
-        [Export("canMakePayments")]
-        bool CanMakePayments { get; }
-
-        // +(BOOL)canMakePaymentsUsingNetworks:(NSArray<PKPaymentNetwork> * _Nonnull)supportedNetworks;
-        [Static]
-        [Export("canMakePaymentsUsingNetworks:")]
-        bool CanMakePaymentsUsingNetworks(string[] supportedNetworks);
-
-        // +(BOOL)canMakePaymentsUsingNetworks:(NSArray<PKPaymentNetwork> * _Nonnull)supportedNetworks capabilities:(PKMerchantCapability)capabilties __attribute__((availability(ios, introduced=9.0)));
-        [iOS(9, 0)]
-        [Static]
-        [Export("canMakePaymentsUsingNetworks:capabilities:")]
-        bool CanMakePaymentsUsingNetworks(string[] supportedNetworks, PKMerchantCapability capabilties);
-
-        [Wrap("WeakDelegate")]
-        [NullAllowed]
-        PKPaymentAuthorizationViewControllerDelegate Delegate { get; set; }
-
-        // @property (nonatomic, weak) id<PKPaymentAuthorizationViewControllerDelegate> _Nullable delegate;
-        [NullAllowed, Export("delegate", ArgumentSemantic.Weak)]
-        NSObject WeakDelegate { get; set; }
-
-        // -(instancetype _Nullable)initWithPaymentRequest:(PKPaymentRequest * _Nonnull)request __attribute__((objc_designated_initializer));
-        [Export("initWithPaymentRequest:")]
-        [DesignatedInitializer]
-        IntPtr Constructor(PKPaymentRequest request);
-    }
-
-    // @protocol PKPaymentAuthorizationControllerDelegate <NSObject>
-    [Protocol, Model]
-    [BaseType(typeof(NSObject))]
-    interface PKPaymentAuthorizationControllerDelegate
-    {
-        // @required -(void)paymentAuthorizationControllerDidFinish:(PKPaymentAuthorizationController * _Nonnull)controller;
-        [Abstract]
-        [Export("paymentAuthorizationControllerDidFinish:")]
-        void PaymentAuthorizationControllerDidFinish(PKPaymentAuthorizationController controller);
-
-        // @optional -(void)paymentAuthorizationController:(PKPaymentAuthorizationController * _Nonnull)controller didAuthorizePayment:(PKPayment * _Nonnull)payment handler:(void (^ _Nonnull)(PKPaymentAuthorizationResult * _Nonnull))completion __attribute__((availability(watchos, introduced=4.0))) __attribute__((availability(ios, introduced=11.0)));
-        [Watch(4, 0), iOS(11, 0)]
-        [Export("paymentAuthorizationController:didAuthorizePayment:handler:")]
-        void PaymentAuthorizationController(PKPaymentAuthorizationController controller, PKPayment payment, Action<PKPaymentAuthorizationResult> completion);
-
-        // @optional -(void)paymentAuthorizationController:(PKPaymentAuthorizationController * _Nonnull)controller didAuthorizePayment:(PKPayment * _Nonnull)payment completion:(void (^ _Nonnull)(PKPaymentAuthorizationStatus))completion __attribute__((availability(watchos, introduced=3.0, deprecated=4.0))) __attribute__((availability(ios, introduced=10.0, deprecated=11.0)));
-        [Introduced(PlatformName.WatchOS, 3, 0, message: "Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.WatchOS, 4, 0, message: "Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors")]
-        [Introduced(PlatformName.iOS, 10, 0, message: "Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.iOS, 11, 0, message: "Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors")]
-        [Export("paymentAuthorizationController:didAuthorizePayment:completion:")]
-        void PaymentAuthorizationController(PKPaymentAuthorizationController controller, PKPayment payment, Action<PKPaymentAuthorizationStatus> completion);
-
-        // @optional -(void)paymentAuthorizationControllerWillAuthorizePayment:(PKPaymentAuthorizationController * _Nonnull)controller;
-        [Export("paymentAuthorizationControllerWillAuthorizePayment:")]
-        void PaymentAuthorizationControllerWillAuthorizePayment(PKPaymentAuthorizationController controller);
-
-        // @optional -(void)paymentAuthorizationController:(PKPaymentAuthorizationController * _Nonnull)controller didSelectShippingMethod:(PKShippingMethod * _Nonnull)shippingMethod handler:(void (^ _Nonnull)(PKPaymentRequestShippingMethodUpdate * _Nonnull))completion __attribute__((availability(watchos, introduced=4.0))) __attribute__((availability(ios, introduced=11.0)));
-        [Watch(4, 0), iOS(11, 0)]
-        [Export("paymentAuthorizationController:didSelectShippingMethod:handler:")]
-        void PaymentAuthorizationController(PKPaymentAuthorizationController controller, PKShippingMethod shippingMethod, Action<PKPaymentRequestShippingMethodUpdate> completion);
-
-        // @optional -(void)paymentAuthorizationController:(PKPaymentAuthorizationController * _Nonnull)controller didSelectShippingContact:(PKContact * _Nonnull)contact handler:(void (^ _Nonnull)(PKPaymentRequestShippingContactUpdate * _Nonnull))completion __attribute__((availability(watchos, introduced=4.0))) __attribute__((availability(ios, introduced=11.0)));
-        [Watch(4, 0), iOS(11, 0)]
-        [Export("paymentAuthorizationController:didSelectShippingContact:handler:")]
-        void PaymentAuthorizationController(PKPaymentAuthorizationController controller, PKContact contact, Action<PKPaymentRequestShippingContactUpdate> completion);
-
-        // @optional -(void)paymentAuthorizationController:(PKPaymentAuthorizationController * _Nonnull)controller didSelectPaymentMethod:(PKPaymentMethod * _Nonnull)paymentMethod handler:(void (^ _Nonnull)(PKPaymentRequestPaymentMethodUpdate * _Nonnull))completion __attribute__((availability(watchos, introduced=4.0))) __attribute__((availability(ios, introduced=11.0)));
-        [Watch(4, 0), iOS(11, 0)]
-        [Export("paymentAuthorizationController:didSelectPaymentMethod:handler:")]
-        void PaymentAuthorizationController(PKPaymentAuthorizationController controller, PKPaymentMethod paymentMethod, Action<PKPaymentRequestPaymentMethodUpdate> completion);
-
-        // @optional -(void)paymentAuthorizationController:(PKPaymentAuthorizationController * _Nonnull)controller didSelectShippingMethod:(PKShippingMethod * _Nonnull)shippingMethod completion:(void (^ _Nonnull)(PKPaymentAuthorizationStatus, NSArray<PKPaymentSummaryItem *> * _Nonnull))completion __attribute__((availability(watchos, introduced=3.0, deprecated=4.0))) __attribute__((availability(ios, introduced=10.0, deprecated=11.0)));
-        [Introduced(PlatformName.WatchOS, 3, 0, message: "Use paymentAuthorizationController:didSelectShippingMethod:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.WatchOS, 4, 0, message: "Use paymentAuthorizationController:didSelectShippingMethod:handler: instead to provide more granular errors")]
-        [Introduced(PlatformName.iOS, 10, 0, message: "Use paymentAuthorizationController:didSelectShippingMethod:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.iOS, 11, 0, message: "Use paymentAuthorizationController:didSelectShippingMethod:handler: instead to provide more granular errors")]
-        [Export("paymentAuthorizationController:didSelectShippingMethod:completion:")]
-        void PaymentAuthorizationController(PKPaymentAuthorizationController controller, PKShippingMethod shippingMethod, Action<PKPaymentAuthorizationStatus, NSArray<PKPaymentSummaryItem>> completion);
-
-        // @optional -(void)paymentAuthorizationController:(PKPaymentAuthorizationController * _Nonnull)controller didSelectShippingContact:(PKContact * _Nonnull)contact completion:(void (^ _Nonnull)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull, NSArray<PKPaymentSummaryItem *> * _Nonnull))completion __attribute__((availability(watchos, introduced=3.0, deprecated=4.0))) __attribute__((availability(ios, introduced=10.0, deprecated=11.0)));
-        [Introduced(PlatformName.WatchOS, 3, 0, message: "Use paymentAuthorizationController:didSelectShippingContact:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.WatchOS, 4, 0, message: "Use paymentAuthorizationController:didSelectShippingContact:handler: instead to provide more granular errors")]
-        [Introduced(PlatformName.iOS, 10, 0, message: "Use paymentAuthorizationController:didSelectShippingContact:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.iOS, 11, 0, message: "Use paymentAuthorizationController:didSelectShippingContact:handler: instead to provide more granular errors")]
-        [Export("paymentAuthorizationController:didSelectShippingContact:completion:")]
-        void PaymentAuthorizationController(PKPaymentAuthorizationController controller, PKContact contact, Action<PKPaymentAuthorizationStatus, NSArray<PKShippingMethod>, NSArray<PKPaymentSummaryItem>> completion);
-
-        // @optional -(void)paymentAuthorizationController:(PKPaymentAuthorizationController * _Nonnull)controller didSelectPaymentMethod:(PKPaymentMethod * _Nonnull)paymentMethod completion:(void (^ _Nonnull)(NSArray<PKPaymentSummaryItem *> * _Nonnull))completion __attribute__((availability(watchos, introduced=3.0, deprecated=4.0))) __attribute__((availability(ios, introduced=10.0, deprecated=11.0)));
-        [Introduced(PlatformName.WatchOS, 3, 0, message: "Use paymentAuthorizationController:didSelectPaymentMethod:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.WatchOS, 4, 0, message: "Use paymentAuthorizationController:didSelectPaymentMethod:handler: instead to provide more granular errors")]
-        [Introduced(PlatformName.iOS, 10, 0, message: "Use paymentAuthorizationController:didSelectPaymentMethod:handler: instead to provide more granular errors")]
-        [Deprecated(PlatformName.iOS, 11, 0, message: "Use paymentAuthorizationController:didSelectPaymentMethod:handler: instead to provide more granular errors")]
-        [Export("paymentAuthorizationController:didSelectPaymentMethod:completion:")]
-        void PaymentAuthorizationController(PKPaymentAuthorizationController controller, PKPaymentMethod paymentMethod, Action<NSArray<PKPaymentSummaryItem>> completion);
-    }
-
-    // @interface PKPaymentAuthorizationController : NSObject
-    [Protocol]
-    [Watch(3, 0), iOS(10, 0)]
-    [BaseType(typeof(NSObject))]
-    interface PKPaymentAuthorizationController
-    {
-        // +(BOOL)canMakePayments;
-        [Static]
-        [Export("canMakePayments")]
-        bool CanMakePayments { get; }
-
-        // +(BOOL)canMakePaymentsUsingNetworks:(NSArray<PKPaymentNetwork> * _Nonnull)supportedNetworks;
-        [Static]
-        [Export("canMakePaymentsUsingNetworks:")]
-        bool CanMakePaymentsUsingNetworks(string[] supportedNetworks);
-
-        // +(BOOL)canMakePaymentsUsingNetworks:(NSArray<PKPaymentNetwork> * _Nonnull)supportedNetworks capabilities:(PKMerchantCapability)capabilties;
-        [Static]
-        [Export("canMakePaymentsUsingNetworks:capabilities:")]
-        bool CanMakePaymentsUsingNetworks(string[] supportedNetworks, PKMerchantCapability capabilties);
-
-        [Wrap("WeakDelegate")]
-        [NullAllowed]
-        PKPaymentAuthorizationControllerDelegate Delegate { get; set; }
-
-        // @property (nonatomic, weak) id<PKPaymentAuthorizationControllerDelegate> _Nullable delegate;
-        [NullAllowed, Export("delegate", ArgumentSemantic.Weak)]
-        NSObject WeakDelegate { get; set; }
-
-        // -(instancetype _Nonnull)initWithPaymentRequest:(PKPaymentRequest * _Nonnull)request __attribute__((objc_designated_initializer));
-        [Export("initWithPaymentRequest:")]
-        [DesignatedInitializer]
-        IntPtr Constructor(PKPaymentRequest request);
-
-        // -(void)presentWithCompletion:(void (^ _Nullable)(BOOL))completion;
-        [Export("presentWithCompletion:")]
-        void PresentWithCompletion([NullAllowed] Action<bool> completion);
-
-        // -(void)dismissWithCompletion:(void (^ _Nullable)(void))completion;
-        [Export("dismissWithCompletion:")]
-        void DismissWithCompletion([NullAllowed] Action completion);
-    }
-    */
+    // The first step to creating a binding is to add your native library ("libNativeLibrary.a")
+    // to the project by right-clicking (or Control-clicking) the folder containing this source
+    // file and clicking "Add files..." and then simply select the native library (or libraries)
+    // that you want to bind.
+    //
+    // When you do that, you'll notice that MonoDevelop generates a code-behind file for each
+    // native library which will contain a [LinkWith] attribute. MonoDevelop auto-detects the
+    // architectures that the native library supports and fills in that information for you,
+    // however, it cannot auto-detect any Frameworks or other system libraries that the
+    // native library may depend on, so you'll need to fill in that information yourself.
+    //
+    // Once you've done that, you're ready to move on to binding the API...
+    //
+    //
+    // Here is where you'd define your API definition for the native Objective-C library.
+    //
+    // For example, to bind the following Objective-C class:
+    //
+    //     @interface Widget : NSObject {
+    //     }
+    //
+    // The C# binding would look like this:
+    //
+    //     [BaseType (typeof (NSObject))]
+    //     interface Widget {
+    //     }
+    //
+    // To bind Objective-C properties, such as:
+    //
+    //     @property (nonatomic, readwrite, assign) CGPoint center;
+    //
+    // You would add a property definition in the C# interface like so:
+    //
+    //     [Export ("center")]
+    //     CGPoint Center { get; set; }
+    //
+    // To bind an Objective-C method, such as:
+    //
+    //     -(void) doSomething:(NSObject *)object atIndex:(NSInteger)index;
+    //
+    // You would add a method definition to the C# interface like so:
+    //
+    //     [Export ("doSomething:atIndex:")]
+    //     void DoSomething (NSObject object, int index);
+    //
+    // Objective-C "constructors" such as:
+    //
+    //     -(id)initWithElmo:(ElmoMuppet *)elmo;
+    //
+    // Can be bound as:
+    //
+    //     [Export ("initWithElmo:")]
+    //     IntPtr Constructor (ElmoMuppet elmo);
+    //
+    // For more information, see http://developer.xamarin.com/guides/ios/advanced_topics/binding_objective-c/
+    //
 
     // @interface CCCCardInfo : NSObject <NSCopying>
     [Protocol]
@@ -260,20 +87,20 @@ namespace CardConnect
         string PostalCode { get; set; }
 
         // @property (readonly, assign, nonatomic) CCCCardIssuer accountType;
-        //[Export("accountType", ArgumentSemantic.Assign)]
-        //CCCCardIssuer AccountType { get; }
+        [Export("accountType", ArgumentSemantic.Assign)]
+        CCCCardIssuer AccountType { get; }
 
-        //// @property (assign, nonatomic) CCCCardMaskFormat maskFormat;
-        //[Export("maskFormat", ArgumentSemantic.Assign)]
-        //CCCCardMaskFormat MaskFormat { get; set; }
+        // @property (assign, nonatomic) CCCCardMaskFormat maskFormat;
+        [Export("maskFormat", ArgumentSemantic.Assign)]
+        CCCCardMaskFormat MaskFormat { get; set; }
 
         // @property (assign, nonatomic) unichar maskCharacter;
         [Export("maskCharacter")]
         ushort MaskCharacter { get; set; }
 
         // @property (assign, nonatomic) CCCCardMaskSpacing maskSpacing;
-        //[Export("maskSpacing", ArgumentSemantic.Assign)]
-        //CCCCardMaskSpacing MaskSpacing { get; set; }
+        [Export("maskSpacing", ArgumentSemantic.Assign)]
+        CCCCardMaskSpacing MaskSpacing { get; set; }
 
         // -(BOOL)isCardValid;
         [Export("isCardValid")]
@@ -486,6 +313,16 @@ namespace CardConnect
         void ClearTextField();
     }
 
+    // @protocol CCCFormatterDelegateExtension <UITextFieldDelegate>
+    [Protocol]
+    [BaseType(typeof(NSObject))]
+    interface CCCFormatterDelegateExtension : IUITextFieldDelegate
+    {
+        // @optional -(void)didChangeCharactersInRangeForFormatter:(CCCTextFieldDelegateProxy *)formatter;
+        [Export("didChangeCharactersInRangeForFormatter:")]
+        void DidChangeCharactersInRangeForFormatter(CCCTextFieldDelegateProxy formatter);
+    }
+
     // @interface CCCCVVFormatterDelegate : CCCTextFieldDelegateProxy
     [Protocol]
     [BaseType(typeof(CCCTextFieldDelegateProxy))]
@@ -504,8 +341,8 @@ namespace CardConnect
         bool IsValidCVVForCardNumber(string cardNumber);
 
         // -(BOOL)isValidCVVWithCardFormatter:(CCCCardFormatterDelegate *)formatter;
-        //[Export("isValidCVVWithCardFormatter:")]
-        //bool IsValidCVVWithCardFormatter(CCCCardFormatterDelegate formatter);
+        [Export("isValidCVVWithCardFormatter:")]
+        bool IsValidCVVWithCardFormatter(CCCCardFormatterDelegate formatter);
 
         // -(void)setCVVOnCardInfo:(CCCCardInfo *)cardInfo;
         [Export("setCVVOnCardInfo:")]
@@ -519,6 +356,61 @@ namespace CardConnect
     {
     }
 
+    // @interface CCCCardFormatterDelegate : CCCTextFieldDelegateProxy
+    [Protocol]
+    [BaseType(typeof(CCCTextFieldDelegateProxy))]
+    interface CCCCardFormatterDelegate
+    {
+        // @property (nonatomic) CCCCardMaskFormat maskFormat;
+        [Export("maskFormat", ArgumentSemantic.Assign)]
+        CCCCardMaskFormat MaskFormat { get; set; }
+
+        // @property (nonatomic) unichar maskCharacter;
+        [Export("maskCharacter")]
+        ushort MaskCharacter { get; set; }
+
+        // @property (assign, nonatomic) CCCCardMaskSpacing maskSpacing;
+        [Export("maskSpacing", ArgumentSemantic.Assign)]
+        CCCCardMaskSpacing MaskSpacing { get; set; }
+
+        // @property (getter = isValidCard, nonatomic) BOOL validCard;
+        [Export("validCard")]
+        bool ValidCard { [Bind("isValidCard")] get; set; }
+
+        // -(void)setCardNumberOnCardInfo:(CCCCardInfo *)cardInfo;
+        [Export("setCardNumberOnCardInfo:")]
+        void SetCardNumberOnCardInfo(CCCCardInfo cardInfo);
+    }
+
+    // @interface CCCExpirationDateFormatterDelegate : CCCTextFieldDelegateProxy
+    [Protocol]
+    [BaseType(typeof(CCCTextFieldDelegateProxy))]
+    interface CCCExpirationDateFormatterDelegate
+    {
+        // @property (nonatomic) unichar separatorCharacter;
+        [Export("separatorCharacter")]
+        ushort SeparatorCharacter { get; set; }
+
+        // @property (assign, nonatomic) CCCExpirationDateInput inputCount;
+        [Export("inputCount", ArgumentSemantic.Assign)]
+        CCCExpirationDateInput InputCount { get; set; }
+
+        // @property (getter = isValidExpirationDate, nonatomic) BOOL validExpirationDate;
+        [Export("validExpirationDate")]
+        bool ValidExpirationDate { [Bind("isValidExpirationDate")] get; set; }
+
+        // @property (readonly, nonatomic) NSDate * expirationDate;
+        [Export("expirationDate")]
+        NSDate ExpirationDate { get; }
+
+        // -(void)setExpirationDateOnCardInfo:(CCCCardInfo *)cardInfo;
+        [Export("setExpirationDateOnCardInfo:")]
+        void SetExpirationDateOnCardInfo(CCCCardInfo cardInfo);
+
+        // -(instancetype)initWithDate:(NSDate *)date;
+        [Export("initWithDate:")]
+        IntPtr Constructor(NSDate date);
+    }
 
     // @interface CCCPaymentController : NSObject
     [Protocol]
@@ -539,11 +431,11 @@ namespace CardConnect
 
         // -(instancetype _Nullable)initWithRootView:(UIViewController * _Nonnull)rootView apiBridge:(id<CCCAPIBridgeProtocol> _Nonnull)bridge delegate:(id<CCCPaymentControllerDelegate> _Nonnull)delegate;
         [Export("initWithRootView:apiBridge:delegate:")]
-        IntPtr Constructor(UIViewController rootView, CCCAPIBridgeProtocol bridge, CCCPaymentControllerDelegate @delegate);
+        IntPtr Constructor(UIViewController rootView, CCCAPIBridgeProtocol bridge, CCCPaymentControllerDelegate @del);
 
         // -(instancetype _Nullable)initWithRootView:(UIViewController * _Nonnull)rootView apiBridge:(id<CCCAPIBridgeProtocol> _Nonnull)bridge delegate:(id<CCCPaymentControllerDelegate> _Nonnull)delegate theme:(CCCTheme * _Nullable)theme;
-        //[Export("initWithRootView:apiBridge:delegate:theme:")]
-        //IntPtr Constructor(UIViewController rootView, CCCAPIBridgeProtocol bridge, CCCPaymentControllerDelegate @delegate, [NullAllowed] CCCTheme theme);
+        [Export("initWithRootView:apiBridge:delegate:theme:")]
+        IntPtr Constructor(UIViewController rootView, CCCAPIBridgeProtocol bridge, CCCPaymentControllerDelegate @del, [NullAllowed] CCCTheme theme);
 
         // -(void)presentPaymentView;
         [Export("presentPaymentView")]
@@ -591,8 +483,261 @@ namespace CardConnect
         NSData AdditionalData { get; set; }
     }
 
+    // @interface CCCSwiper : NSObject
+    [Protocol]
+    [BaseType(typeof(NSObject))]
+    interface CCCSwiper
+    {
+        [Wrap("WeakDelegate")]
+        CCCSwiperDelegate Delegate { get; set; }
 
+        // @property (nonatomic, weak) id<CCCSwiperDelegate> delegate;
+        [NullAllowed, Export("delegate", ArgumentSemantic.Weak)]
+        NSObject WeakDelegate { get; set; }
 
+        // @property (readonly, assign, nonatomic) CCCSwiperConnectionState connectionState;
+        [Export("connectionState", ArgumentSemantic.Assign)]
+        CCCSwiperConnectionState ConnectionState { get; }
+
+        // +(NSString *)model;
+        [Static]
+        [Export("model")]
+        string Model { get; }
+
+        // @property (getter = isDebugLoggingEnabled, nonatomic) BOOL debugLoggingEnabled;
+        [Export("debugLoggingEnabled")]
+        bool DebugLoggingEnabled { [Bind("isDebugLoggingEnabled")] get; set; }
+
+        // -(instancetype)initWithDelegate:(id<CCCSwiperDelegate>)delegate;
+        [Export("initWithDelegate:")]
+        IntPtr Constructor(CCCSwiperDelegate @delegate);
+
+        // -(instancetype)initWithDelegate:(id<CCCSwiperDelegate>)delegate loggingEnabled:(BOOL)enabled;
+        [Export("initWithDelegate:loggingEnabled:")]
+        IntPtr Constructor(CCCSwiperDelegate @delegate, bool enabled);
+
+        // -(_Bool)shouldShowAudioWarning;
+        [Export("shouldShowAudioWarning")]
+        bool ShouldShowAudioWarning { get; }
+    }
+
+    // @protocol CCCSwiperDelegate <NSObject>
+    [Protocol, Model]
+    [BaseType(typeof(NSObject))]
+    interface CCCSwiperDelegate
+    {
+        // @required -(void)swiper:(CCCSwiper *)swiper didGenerateTokenWithAccount:(CCCAccount *)account completion:(void (^)())completion;
+        [Abstract]
+        [Export("swiper:didGenerateTokenWithAccount:completion:")]
+        void Swiper(CCCSwiper swiper, CCCAccount account, Action completion);
+
+        // @required -(void)swiper:(CCCSwiper *)swiper didFailWithError:(NSError *)error completion:(void (^)())completion;
+        [Abstract]
+        [Export("swiper:didFailWithError:completion:")]
+        void Swiper(CCCSwiper swiper, NSError error, Action completion);
+
+        // @optional -(void)swiper:(CCCSwiper *)swiper connectionStateHasChanged:(CCCSwiperConnectionState)state;
+        [Export("swiper:connectionStateHasChanged:")]
+        void Swiper(CCCSwiper swiper, CCCSwiperConnectionState state);
+
+        // @optional -(void)swiper:(CCCSwiper *)swiper batteryLevelStatusHasChanged:(CCCSwiperBatteryStatus)status;
+        [Export("swiper:batteryLevelStatusHasChanged:")]
+        void Swiper(CCCSwiper swiper, CCCSwiperBatteryStatus status);
+
+        // @optional -(void)swiperDidStartMSR:(CCCSwiper *)swiper;
+        [Export("swiperDidStartMSR:")]
+        void SwiperDidStartMSR(CCCSwiper swiper);
+    }
+
+    // @interface CCCSwiperController : CCCSwiper
+    [Protocol]
+    [BaseType(typeof(CCCSwiper))]
+    interface CCCSwiperController
+    {
+        // -(instancetype)initWithDelegate:(id<CCCSwiperDelegate>)delegate loggingEnabled:(BOOL)enabled;
+        [Export("initWithDelegate:loggingEnabled:")]
+        IntPtr Constructor(CCCSwiperDelegate @delegate, bool enabled);
+    }
+
+    // @interface CCCTheme : NSObject
+    [Protocol]
+    [BaseType(typeof(NSObject))]
+    interface CCCTheme
+    {
+        // @property (assign, nonatomic) UIBarStyle navigationBarStyle;
+        [Export("navigationBarStyle", ArgumentSemantic.Assign)]
+        UIBarStyle NavigationBarStyle { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified navigationBarColor;
+        [Export("navigationBarColor", ArgumentSemantic.Strong)]
+        UIColor NavigationBarColor { get; set; }
+
+        // @property (assign, nonatomic) BOOL navigationBarTranslucent;
+        [Export("navigationBarTranslucent")]
+        bool NavigationBarTranslucent { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified navigationTitleColor;
+        [Export("navigationTitleColor", ArgumentSemantic.Strong)]
+        UIColor NavigationTitleColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified navigationTitleFont;
+        [Export("navigationTitleFont", ArgumentSemantic.Strong)]
+        UIFont NavigationTitleFont { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified navigationButtonColor;
+        [Export("navigationButtonColor", ArgumentSemantic.Strong)]
+        UIColor NavigationButtonColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified navigationButtonFont;
+        [Export("navigationButtonFont", ArgumentSemantic.Strong)]
+        UIFont NavigationButtonFont { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified backgroundColor;
+        [Export("backgroundColor", ArgumentSemantic.Strong)]
+        UIColor BackgroundColor { get; set; }
+
+        // @property (nonatomic, strong) NSString * _Nullable disclaimerText;
+        [NullAllowed, Export("disclaimerText", ArgumentSemantic.Strong)]
+        string DisclaimerText { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified disclaimerTextColor;
+        [Export("disclaimerTextColor", ArgumentSemantic.Strong)]
+        UIColor DisclaimerTextColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified disclaimerTextFont;
+        [Export("disclaimerTextFont", ArgumentSemantic.Strong)]
+        UIFont DisclaimerTextFont { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified buttonColor;
+        [Export("buttonColor", ArgumentSemantic.Strong)]
+        UIColor ButtonColor { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified buttonTextColor;
+        [Export("buttonTextColor", ArgumentSemantic.Strong)]
+        UIColor ButtonTextColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified buttonTextFont;
+        [Export("buttonTextFont", ArgumentSemantic.Strong)]
+        UIFont ButtonTextFont { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified spinnerBackgroundColor;
+        [Export("spinnerBackgroundColor", ArgumentSemantic.Strong)]
+        UIColor SpinnerBackgroundColor { get; set; }
+
+        // @property (assign, nonatomic) UIActivityIndicatorViewStyle spinnerStyle;
+        [Export("spinnerStyle", ArgumentSemantic.Assign)]
+        UIActivityIndicatorViewStyle SpinnerStyle { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified listSeparatorColor;
+        [Export("listSeparatorColor", ArgumentSemantic.Strong)]
+        UIColor ListSeparatorColor { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified listCellColor;
+        [Export("listCellColor", ArgumentSemantic.Strong)]
+        UIColor ListCellColor { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified listTextColor;
+        [Export("listTextColor", ArgumentSemantic.Strong)]
+        UIColor ListTextColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified listTextFont;
+        [Export("listTextFont", ArgumentSemantic.Strong)]
+        UIFont ListTextFont { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified listSecondaryTextColor;
+        [Export("listSecondaryTextColor", ArgumentSemantic.Strong)]
+        UIColor ListSecondaryTextColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified listSecondaryTextFont;
+        [Export("listSecondaryTextFont", ArgumentSemantic.Strong)]
+        UIFont ListSecondaryTextFont { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified listSectionHeaderColor;
+        [Export("listSectionHeaderColor", ArgumentSemantic.Strong)]
+        UIColor ListSectionHeaderColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified listSectionHeaderFont;
+        [Export("listSectionHeaderFont", ArgumentSemantic.Strong)]
+        UIFont ListSectionHeaderFont { get; set; }
+
+        // @property (assign, nonatomic) BOOL collectContactInfo;
+        [Export("collectContactInfo")]
+        bool CollectContactInfo { get; set; }
+
+        // @property (assign, nonatomic) BOOL collectBillingAddress;
+        [Export("collectBillingAddress")]
+        bool CollectBillingAddress { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Nullable cardColor;
+        [NullAllowed, Export("cardColor", ArgumentSemantic.Strong)]
+        UIColor CardColor { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified cardTextColor;
+        [Export("cardTextColor", ArgumentSemantic.Strong)]
+        UIColor CardTextColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified cardTextFont;
+        [Export("cardTextFont", ArgumentSemantic.Strong)]
+        UIFont CardTextFont { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified listInputTextColor;
+        [Export("listInputTextColor", ArgumentSemantic.Strong)]
+        UIColor ListInputTextColor { get; set; }
+
+        // @property (nonatomic, strong) UIFont * _Null_unspecified listInputTextFont;
+        [Export("listInputTextFont", ArgumentSemantic.Strong)]
+        UIFont ListInputTextFont { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Null_unspecified listToggleOnColor;
+        [Export("listToggleOnColor", ArgumentSemantic.Strong)]
+        UIColor ListToggleOnColor { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Nullable listToggleTintColor;
+        [NullAllowed, Export("listToggleTintColor", ArgumentSemantic.Strong)]
+        UIColor ListToggleTintColor { get; set; }
+
+        // @property (nonatomic, strong) UIColor * _Nullable listToggleThumbColor;
+        [NullAllowed, Export("listToggleThumbColor", ArgumentSemantic.Strong)]
+        UIColor ListToggleThumbColor { get; set; }
+
+        // @property (assign, nonatomic) CCCCardMaskFormat maskFormat;
+        [Export("maskFormat", ArgumentSemantic.Assign)]
+        CCCCardMaskFormat MaskFormat { get; set; }
+
+        // @property (assign, nonatomic) unichar maskCharacter;
+        [Export("maskCharacter")]
+        ushort MaskCharacter { get; set; }
+
+        // @property (assign, nonatomic) CCCCardMaskSpacing cardDisplayMaskSpacing;
+        [Export("cardDisplayMaskSpacing", ArgumentSemantic.Assign)]
+        CCCCardMaskSpacing CardDisplayMaskSpacing { get; set; }
+
+        // @property (assign, nonatomic) CCCCardMaskSpacing cardTextFieldMaskSpacing;
+        [Export("cardTextFieldMaskSpacing", ArgumentSemantic.Assign)]
+        CCCCardMaskSpacing CardTextFieldMaskSpacing { get; set; }
+
+        // @property (nonatomic) unichar separatorCharacter;
+        [Export("separatorCharacter")]
+        ushort SeparatorCharacter { get; set; }
+
+        // @property (assign, nonatomic) CCCExpirationDateInput expirationDateInputCount;
+        [Export("expirationDateInputCount", ArgumentSemantic.Assign)]
+        CCCExpirationDateInput ExpirationDateInputCount { get; set; }
+
+        // @property (nonatomic, strong) NSString * _Null_unspecified applePayButtonDescription;
+        [Export("applePayButtonDescription", ArgumentSemantic.Strong)]
+        string ApplePayButtonDescription { get; set; }
+
+        // @property (assign, nonatomic) PKPaymentButtonType applePayButtonType;
+        [Export("applePayButtonType", ArgumentSemantic.Assign)]
+        PKPaymentButtonType ApplePayButtonType { get; set; }
+
+        // @property (assign, nonatomic) PKPaymentButtonStyle applePayButtonStyle;
+        [Export("applePayButtonStyle", ArgumentSemantic.Assign)]
+        PKPaymentButtonStyle ApplePayButtonStyle { get; set; }
+    }
+
+    //[Static]
     partial interface Constants
     {
         // extern double CardConnectConsumerSDKVersionNumber;
