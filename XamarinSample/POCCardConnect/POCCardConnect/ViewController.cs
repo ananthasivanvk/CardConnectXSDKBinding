@@ -28,21 +28,57 @@ namespace POCCardConnect
 
         partial void applePayPressed(UIButton sender)
         {
-            ObjCRuntime.Class.ThrowOnInitFailure = true;
-
-            CCCAPIBridgeProtocol aPIBridge = new APIBridge();
-
-            PaymentControllerDelegate paymentControllerDelegate = new PaymentControllerDelegate();
-
-            CCCPaymentController cCCPaymentController = new CCCPaymentController(this, aPIBridge, paymentControllerDelegate);
-            CCCPaymentRequest cCCPayment = new CCCPaymentRequest
+            PKPaymentRequest pKPaymentRequest = new PKPaymentRequest
             {
-                ApplePayMerchantID = "merchantid",
-                Total = new Foundation.NSDecimalNumber("1.00")
+                MerchantIdentifier = "merchant.id.sample",
+                CurrencyCode = "USD",
+                CountryCode = "US",
+                MerchantCapabilities = PassKit.PKMerchantCapability.ThreeDS
             };
-            cCCPaymentController.PaymentRequest = cCCPayment;
 
-            cCCPaymentController.PresentPaymentView();
+            PassKit.PKPaymentSummaryItem[] pkPaymentSummaryItems = new PassKit.PKPaymentSummaryItem[]
+            {
+                new PassKit.PKPaymentSummaryItem
+                {
+                    Label = "Total",
+                    Amount= new NSDecimalNumber("1.00")
+                }
+            };
+
+            pKPaymentRequest.PaymentSummaryItems = pkPaymentSummaryItems;
+            pKPaymentRequest.SupportedNetworks = new NSString[]
+            {
+                PassKit.PKPaymentNetwork.MasterCard,
+                PassKit.PKPaymentNetwork.Visa,
+                PassKit.PKPaymentNetwork.Amex
+            };
+
+            PKPaymentAuthorizationViewController pauthCtrl = new PKPaymentAuthorizationViewController(pKPaymentRequest);
+
+            pauthCtrl.PaymentAuthorizationViewControllerDidFinish += (senderObj, e) =>
+            {
+                pauthCtrl.DismissViewController(true, null);
+            };
+
+
+            pauthCtrl.DidAuthorizePayment += (senderObj1, e) =>
+            {
+                CCCAPI cCCAPI = new CCCAPI();
+
+                cCCAPI.GenerateTokenForApplePay(e.Payment, (theToken, error) =>
+                {
+                    if (!String.IsNullOrWhiteSpace(theToken))
+                    {
+                        e.Completion(PassKit.PKPaymentAuthorizationStatus.Success);
+                    }
+                    else
+                    {
+                        e.Completion(PassKit.PKPaymentAuthorizationStatus.Failure);
+                    }
+                });
+            };
+
+            PresentViewController(pauthCtrl, true, null);
         }
     }
 
