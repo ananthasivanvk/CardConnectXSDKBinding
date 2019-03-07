@@ -1,4 +1,5 @@
-﻿using Foundation;
+﻿using CardConnectBinding;
+using Foundation;
 using UIKit;
 
 namespace POCCardConnect
@@ -20,7 +21,8 @@ namespace POCCardConnect
         {
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
-
+            CCCAPI.Instance().Endpoint = "fts.cardconnect.com:6443";
+            CCCAPI.Instance().EnableLogging = true;
             return true;
         }
 

@@ -9,6 +9,8 @@ namespace POCCardConnect
 {
     public partial class ViewController : UIViewController
     {
+        CCCPaymentController cCCPaymentController;
+
         protected ViewController(IntPtr handle) : base(handle)
         {
             // Note: this .ctor should not contain any initialization logic.
@@ -18,6 +20,20 @@ namespace POCCardConnect
         {
             base.ViewDidLoad();
             // Perform any additional setup after loading the view, typically from a nib.
+
+            ObjCRuntime.Class.ThrowOnInitFailure = true;
+
+            CCCAPIBridgeProtocol apiBridge = new APIBridge();
+
+            PaymentControllerDelegate paymentControllerDelegate = new PaymentControllerDelegate();
+            cCCPaymentController = new CCCPaymentController(this, apiBridge, paymentControllerDelegate, new CCCTheme());
+
+            CCCPaymentRequest cCCPayment = new CCCPaymentRequest
+            {
+                ApplePayMerchantID = "merchant.id.sample",
+                Total = new Foundation.NSDecimalNumber("1.00")
+            };
+            cCCPaymentController.PaymentRequest = cCCPayment;
         }
 
         public override void DidReceiveMemoryWarning()
@@ -63,9 +79,8 @@ namespace POCCardConnect
 
             pauthCtrl.DidAuthorizePayment += (senderObj1, e) =>
             {
-                CCCAPI cCCAPI = new CCCAPI();
-
-                cCCAPI.GenerateTokenForApplePay(e.Payment, (theToken, error) =>
+                var ccApi = CCCAPI.Instance();
+                ccApi.GenerateTokenForApplePay(e.Payment, (theToken, error) =>
                 {
                     if (!String.IsNullOrWhiteSpace(theToken))
                     {
