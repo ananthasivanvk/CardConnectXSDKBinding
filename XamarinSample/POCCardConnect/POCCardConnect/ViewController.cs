@@ -7,9 +7,16 @@ using UIKit;
 
 namespace POCCardConnect
 {
-    public partial class ViewController : UIViewController
+    public partial class ViewController : UIViewController, IPKPaymentAuthorizationViewControllerDelegate
     {
-        CCCPaymentController cCCPaymentController;
+        PKPaymentToken paymentToken;
+
+        readonly NSString[] supportedNetworks = {
+            PKPaymentNetwork.Amex,
+            PKPaymentNetwork.Discover,
+            PKPaymentNetwork.MasterCard,
+            PKPaymentNetwork.Visa
+        };
 
         protected ViewController(IntPtr handle) : base(handle)
         {
@@ -20,20 +27,6 @@ namespace POCCardConnect
         {
             base.ViewDidLoad();
             // Perform any additional setup after loading the view, typically from a nib.
-
-            ObjCRuntime.Class.ThrowOnInitFailure = true;
-
-            CCCAPIBridgeProtocol apiBridge = new APIBridge();
-
-            PaymentControllerDelegate paymentControllerDelegate = new PaymentControllerDelegate();
-            cCCPaymentController = new CCCPaymentController(this, apiBridge, paymentControllerDelegate, new CCCTheme());
-
-            CCCPaymentRequest cCCPayment = new CCCPaymentRequest
-            {
-                ApplePayMerchantID = "merchant.id.sample",
-                Total = new Foundation.NSDecimalNumber("1.00")
-            };
-            cCCPaymentController.PaymentRequest = cCCPayment;
         }
 
         public override void DidReceiveMemoryWarning()
@@ -44,87 +37,88 @@ namespace POCCardConnect
 
         partial void applePayPressed(UIButton sender)
         {
-            PKPaymentRequest pKPaymentRequest = new PKPaymentRequest
+            if (!PKPaymentAuthorizationViewController.CanMakePaymentsUsingNetworks(supportedNetworks))
             {
-                MerchantIdentifier = "merchant.id.sample",
-                CurrencyCode = "USD",
-                CountryCode = "US",
-                MerchantCapabilities = PassKit.PKMerchantCapability.ThreeDS
-            };
+                ShowAuthorizationAlert();
+                return;
+            }
 
-            PassKit.PKPaymentSummaryItem[] pkPaymentSummaryItems = new PassKit.PKPaymentSummaryItem[]
+            var paymentRequest = new PKPaymentRequest();
+
+            paymentRequest.MerchantIdentifier = "merchant.id.sample";
+            paymentRequest.CountryCode = "US";
+            paymentRequest.CurrencyCode = "USD";
+            paymentRequest.MerchantCapabilities = PKMerchantCapability.ThreeDS;
+
+            paymentRequest.PaymentSummaryItems = MakeSummaryItems();
+            paymentRequest.SupportedNetworks = supportedNetworks;
+
+            var viewController = new PKPaymentAuthorizationViewController(paymentRequest);
+            viewController.Delegate = this;
+            PresentViewController(viewController, true, null);
+        }
+
+        void ShowAuthorizationAlert()
+        {
+            var alert = UIAlertController.Create("Error", "This device cannot make payments.", UIAlertControllerStyle.Alert);
+            var action = UIAlertAction.Create("Okay", UIAlertActionStyle.Default, null);
+            alert.AddAction(action);
+
+            PresentViewController(alert, true, null);
+        }
+
+        PKPaymentSummaryItem[] MakeSummaryItems()
+        {
+            var items = new List<PKPaymentSummaryItem>();
+
+            // Product items have a label (a string) and an amount (NSDecimalNumber).
+            // NSDecimalNumber is a Cocoa class that can express floating point numbers
+            // in Base 10, which ensures precision. It can be initialized with a
+            // double, or in this case, a string.
+            var productSummaryItem = PKPaymentSummaryItem.Create("Total", new NSDecimalNumber("1.00"));
+            items.Add(productSummaryItem);
+
+            return items.ToArray();
+        }
+
+        /// <summary>
+        /// This is where you would send your payment to be processed - here we will
+        /// simply present a confirmation screen. If your payment processor failed the
+        /// payment you would return `completion(PKPaymentAuthorizationStatus.Failure)` instead. Remember to never
+        /// attempt to decrypt the payment token on device.
+        /// </summary>
+        public void DidAuthorizePayment(PKPaymentAuthorizationViewController controller, PKPayment payment, Action<PKPaymentAuthorizationStatus> completion)
+        {
+            paymentToken = payment.Token;
+
+            var ccApi = CCCAPI.Instance();
+            ccApi.GenerateTokenForApplePay(payment, (theToken, error) =>
             {
-                new PassKit.PKPaymentSummaryItem
+                if (!String.IsNullOrWhiteSpace(theToken))
                 {
-                    Label = "Total",
-                    Amount= new NSDecimalNumber("1.00")
+                    completion(PassKit.PKPaymentAuthorizationStatus.Success);
+
+                    var alert = UIAlertController.Create("Payment Received!", "Thanks for making payment.", UIAlertControllerStyle.Alert);
+                    var action = UIAlertAction.Create("Okay", UIAlertActionStyle.Default, null);
+                    alert.AddAction(action);
+
+                    PresentViewController(alert, true, null);
                 }
-            };
-
-            pKPaymentRequest.PaymentSummaryItems = pkPaymentSummaryItems;
-            pKPaymentRequest.SupportedNetworks = new NSString[]
-            {
-                PassKit.PKPaymentNetwork.MasterCard,
-                PassKit.PKPaymentNetwork.Visa,
-                PassKit.PKPaymentNetwork.Amex
-            };
-
-            PKPaymentAuthorizationViewController pauthCtrl = new PKPaymentAuthorizationViewController(pKPaymentRequest);
-
-            pauthCtrl.PaymentAuthorizationViewControllerDidFinish += (senderObj, e) =>
-            {
-                pauthCtrl.DismissViewController(true, null);
-            };
-
-
-            pauthCtrl.DidAuthorizePayment += (senderObj1, e) =>
-            {
-                var ccApi = CCCAPI.Instance();
-                ccApi.GenerateTokenForApplePay(e.Payment, (theToken, error) =>
+                else
                 {
-                    if (!String.IsNullOrWhiteSpace(theToken))
-                    {
-                        e.Completion(PassKit.PKPaymentAuthorizationStatus.Success);
-                    }
-                    else
-                    {
-                        e.Completion(PassKit.PKPaymentAuthorizationStatus.Failure);
-                    }
-                });
-            };
-
-            PresentViewController(pauthCtrl, true, null);
-        }
-    }
-
-    public class APIBridge : CCCAPIBridgeProtocol
-    {
-        public override void CCC_deleteCustomerAccount(string accountID,  Action<bool, NSError> completion)
-        {
-            //throw new NotImplementedException();
+                    completion(PassKit.PKPaymentAuthorizationStatus.Failure);
+                }
+            });
         }
 
-        public override void CCC_getAccounts( Action<NSArray<CCCAccount>, NSError> completion)
+        public void PaymentAuthorizationViewControllerDidFinish(PKPaymentAuthorizationViewController controller)
         {
-            //throw new NotImplementedException();
+            // We always need to dismiss our payment view controller when done.
+            DismissViewController(true, null);
         }
 
-        public override void CCC_saveAccountToCustomer(CCCAccount account,  Action<CCCAccount, NSError> completion)
+        public void WillAuthorizePayment(PKPaymentAuthorizationViewController controller)
         {
-            //throw new NotImplementedException();
-        }
-
-        public override void CCC_updateAccount(CCCAccount account,  Action<CCCAccount, NSError> completion)
-        {
-            //throw new NotImplementedException();
-        }
-    }
-
-    public class PaymentControllerDelegate : CCCPaymentControllerDelegate
-    {
-        public override void PaymentController(CCCPaymentController controller, CCCAccount account)
-        {
-            //throw new NotImplementedException();
         }
     }
 }
