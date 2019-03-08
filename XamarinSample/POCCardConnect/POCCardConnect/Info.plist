@@ -5,7 +5,7 @@
 	<key>CFBundleName</key>
 	<string>POCCardConnect</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.softura.cc.POCCardConnect</string>
+	<string>com.cc.POCCardConnect</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>

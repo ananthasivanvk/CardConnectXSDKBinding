@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using CardConnectBinding;
 using Foundation;
-using ObjCRuntime;
 using PassKit;
 using UIKit;
 
@@ -92,21 +92,24 @@ namespace POCCardConnect
             paymentToken = payment.Token;
 
             var ccApi = CCCAPI.Instance();
+
+            //Verifyng - Apple pay token got from apple
+            Console.WriteLine("CC API paymentToken = " + paymentToken);
+            //Card Connect Verifying - Endpoint
+            Console.WriteLine("CC API End point = " + ccApi.Endpoint);
+
             ccApi.GenerateTokenForApplePay(payment, (theToken, error) =>
             {
+                //Card Connect token, which should be used to finalize the payment through one of the server sdks of card connect.
+                Console.WriteLine("CC API theToken = " + theToken); 
+
                 if (!String.IsNullOrWhiteSpace(theToken))
                 {
-                    completion(PassKit.PKPaymentAuthorizationStatus.Success);
-
-                    var alert = UIAlertController.Create("Payment Received!", "Thanks for making payment.", UIAlertControllerStyle.Alert);
-                    var action = UIAlertAction.Create("Okay", UIAlertActionStyle.Default, null);
-                    alert.AddAction(action);
-
-                    PresentViewController(alert, true, null);
+                    completion(PKPaymentAuthorizationStatus.Success);
                 }
                 else
                 {
-                    completion(PassKit.PKPaymentAuthorizationStatus.Failure);
+                    completion(PKPaymentAuthorizationStatus.Failure);
                 }
             });
         }
